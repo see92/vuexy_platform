@@ -68,6 +68,20 @@ const router = new VueRouter({
       },
     },
     {
+      path: "/print",
+      name: "print",
+      component: () => import("@/views/print/index.vue"),
+      meta: {
+        pageTitle: "2222",
+        breadcrumb: [
+          {
+            text: "打印安全",
+            active: true,
+          },
+        ],
+      },
+    },
+    {
       path: "/login",
       name: "login",
       component: () => import("@/views/Login.vue"),

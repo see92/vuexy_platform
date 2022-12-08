@@ -82,6 +82,9 @@ localize({
       password: "Password",
       policy_name: "策略名称",
       audit: "授权类型",
+      path: "路径",
+      permissions: "操作权限",
+      sensitiveName: "敏感名称",
     },
     fields: {
       password: {

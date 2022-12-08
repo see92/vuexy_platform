@@ -13,8 +13,8 @@
     </b-form-group>
   </validation-provider>
 </template>
-  
-<script>
+    
+  <script>
 import { BFormGroup, BFormInput } from "bootstrap-vue";
 import { ValidationProvider } from "vee-validate";
 
@@ -70,9 +70,6 @@ export default {
     value(newValue) {
       this.currentValue = newValue;
     },
-    // currentValue(val) {
-    //   this.$emit("input", val);
-    // },
   },
 };
 </script>

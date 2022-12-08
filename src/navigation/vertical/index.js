@@ -19,4 +19,9 @@ export default [
     route: "document",
     icon: "ServerIcon",
   },
+  {
+    title: "打印安全",
+    route: "print",
+    icon: "PrinterIcon",
+  },
 ];
