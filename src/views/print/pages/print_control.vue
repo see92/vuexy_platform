@@ -15,9 +15,9 @@
       {{ cont.type }}
       <div v-show="this.cont.type == 1">
         <div class="d-flex">
-          <b-button variant="primary" @click="modal_show"
-            ><feather-icon icon="PlusIcon" size="16"
-          /></b-button>
+          <b-button variant="primary" @click="modal_show">
+            <feather-icon icon="PlusIcon" size="16" />
+          </b-button>
         </div>
         <b-table :fields="controlFields" :items="controlItem"></b-table>
       </div>
@@ -105,6 +105,16 @@
                 </b-form-checkbox>
                 {{ sensitive.update }}
               </b-form-group>
+              <div class="d-flex justify-content-end">
+                <b-button
+                  class="mr-1"
+                  variant="primary"
+                  :disabled="invalid"
+                  type="submit"
+                  >保存</b-button
+                >
+                <b-button variant="outline-primary">取消</b-button>
+              </div>
             </b-form>
           </validation-observer>
         </div>
@@ -157,6 +167,7 @@ export default {
         type: 0,
         name: "",
       },
+      vStatus: null,
       sensitive: {
         type: 0,
         name: "",
@@ -177,6 +188,15 @@ export default {
   methods: {
     modal_show() {
       this.modal_add = true;
+      this.vStatus = "add";
+    },
+    handle_pre() {
+      let printItem = JSON.parse(JSON.stringify({ ...this.sensitive }));
+      printItem.state = Number(printItem.state);
+      printItem.update = Number(printItem.update);
+      if (this.vStatus == "add") {
+        this.controlItem.push(printItem);
+      }
     },
   },
 };
@@ -186,6 +206,7 @@ export default {
 
 <style lang="scss">
 @import "@core/scss/vue/libs/vue-select.scss";
+
 .contForm {
   .col-form-label {
     width: 100px;
