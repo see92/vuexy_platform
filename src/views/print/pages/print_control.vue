@@ -44,11 +44,67 @@
                     :reduce="(title) => title.key"
                     label="title"
                     :options="typeOptions"
-                    v-model="cont.types"
+                    v-model="sensitive.type"
                   />
                 </div>
               </b-form-group>
-              <Input rules="required" name="sensitiveName" />
+              <Input
+                rules="required"
+                name="sensitiveName"
+                label="敏感名称："
+                label-for="name"
+                type="text"
+                placeText="请输入名称"
+                :value.sync="sensitive.name"
+              />
+              <b-form-group
+                label="特征类型："
+                label-for="type"
+                label-cols-md="auto"
+              >
+                <div class="d-flex" style="margin-top: 5px">
+                  <b-form-radio
+                    plain
+                    value="0"
+                    v-model="sensitive.state"
+                    class="mr-1"
+                    >关键词</b-form-radio
+                  >
+                  <b-form-radio plain value="1" v-model="sensitive.state"
+                    >正则表达式</b-form-radio
+                  >
+                </div>
+              </b-form-group>
+              <Input
+                rules="required"
+                name="feature"
+                label="特征："
+                labelName="feature"
+                type="text"
+                :value.sync="sensitive.feature"
+              />
+              <b-form-group
+                label="敏感等级："
+                label-for="leave"
+                label-cols-md="auto"
+              >
+                <div style="width: 550px">
+                  <v-select
+                    :searchable="false"
+                    :clearable="false"
+                    :reduce="(title) => title.key"
+                    label="title"
+                    :options="leaveOptions"
+                    v-model="sensitive.leave"
+                  />
+                </div>
+              </b-form-group>
+              <b-form-group label="" label-for="update" label-cols-md="auto">
+                <b-form-checkbox v-model="sensitive.update">
+                  同步到敏感词库
+                </b-form-checkbox>
+                {{ sensitive.update }}
+              </b-form-group>
             </b-form>
           </validation-observer>
         </div>
@@ -66,9 +122,13 @@ import {
   BForm,
   BRow,
   BCol,
+  BFormRadio,
+  BFormCheckbox,
 } from "bootstrap-vue";
-import { contOptions, typeOptions } from "../js/options";
+import { contOptions, typeOptions, leaveOptions } from "../js/options";
 import vSelect from "vue-select";
+import Input from "../components/input.vue";
+import { required } from "@validations";
 
 export default {
   name: "print_control",
@@ -82,15 +142,28 @@ export default {
     BForm,
     BRow,
     BCol,
+    Input,
+    BFormRadio,
+    BFormCheckbox,
   },
   data() {
     return {
+      required,
       contOptions: contOptions,
       typeOptions: typeOptions,
+      leaveOptions: leaveOptions,
       modal_add: false,
       cont: {
         type: 0,
-        types: 0,
+        name: "",
+      },
+      sensitive: {
+        type: 0,
+        name: "",
+        state: 0,
+        feature: "",
+        leave: 0,
+        update: false,
       },
       controlFields: [
         { key: "name", label: "敏感名称" },
@@ -112,10 +185,10 @@ export default {
 
 
 <style lang="scss">
+@import "@core/scss/vue/libs/vue-select.scss";
 .contForm {
   .col-form-label {
     width: 100px;
   }
 }
-@import "@core/scss/vue/libs/vue-select.scss";
 </style>

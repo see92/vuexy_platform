@@ -10,4 +10,9 @@ const typeOptions = [
   { key: 4, title: "机场信息" },
   { key: 5, title: "研发信息" },
 ];
-export { contOptions, typeOptions };
+const leaveOptions = [
+  { key: 0, title: '低' },
+  { key: 1, title: '中' },
+  { key: 2, title: '高' }
+]
+export { contOptions, typeOptions, leaveOptions };

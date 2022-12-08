@@ -85,6 +85,7 @@ localize({
       path: "路径",
       permissions: "操作权限",
       sensitiveName: "敏感名称",
+      feature: '特征'
     },
     fields: {
       password: {
