@@ -19,7 +19,36 @@
             <feather-icon icon="PlusIcon" size="16" />
           </b-button>
         </div>
-        <b-table :fields="controlFields" :items="controlItem"></b-table>
+        <b-table :fields="controlFields" :items="controlItem">
+          <template #cell(feature)="data">
+            {{ data.item.state == 0 ? "关键词" : "正则表达式" }}:{{
+              data.item.feature
+            }}
+          </template>
+          <template #cell(leave)="data">
+            <!-- {{ findName(leaveOptions, data.item.leave) }} -->
+          </template>
+          <template #cell(actions)="data">
+            <div class="d-flex align-content-center">
+              <feather-icon
+                icon="EditIcon"
+                size="16"
+                class="mr-50"
+                :id="`edit_${data.index}`"
+                style="cursor: pointer"
+                @click="handle_edit(data)"
+              />
+              <b-tooltip :target="`edit_${data.index}`" title="修改" />
+              <feather-icon
+                icon="Trash2Icon"
+                size="16"
+                :id="`edit_${data.index}`"
+                style="cursor: pointer"
+              />
+              <b-tooltip :target="`trash2_${data.index}`" title="修改" />
+            </div>
+          </template>
+        </b-table>
       </div>
       <!-- 新增敏感词 -->
       <b-modal
@@ -68,8 +97,8 @@
                     value="0"
                     v-model="sensitive.state"
                     class="mr-1"
-                    >关键词</b-form-radio
-                  >
+                    >关键词
+                  </b-form-radio>
                   <b-form-radio plain value="1" v-model="sensitive.state"
                     >正则表达式</b-form-radio
                   >
@@ -113,7 +142,9 @@
                   type="submit"
                   >保存</b-button
                 >
-                <b-button variant="outline-primary">取消</b-button>
+                <b-button variant="outline-primary" @click="handle_reset"
+                  >取消</b-button
+                >
               </div>
             </b-form>
           </validation-observer>
@@ -134,10 +165,11 @@ import {
   BCol,
   BFormRadio,
   BFormCheckbox,
+  BTooltip,
 } from "bootstrap-vue";
 import { contOptions, typeOptions, leaveOptions } from "../js/options";
 import vSelect from "vue-select";
-import Input from "../components/input.vue";
+import Input from "../components/input";
 import { required } from "@validations";
 
 export default {
@@ -155,6 +187,7 @@ export default {
     Input,
     BFormRadio,
     BFormCheckbox,
+    BTooltip,
   },
   data() {
     return {
@@ -168,6 +201,7 @@ export default {
         name: "",
       },
       vStatus: null,
+      index: null,
       sensitive: {
         type: 0,
         name: "",
@@ -177,26 +211,71 @@ export default {
         update: false,
       },
       controlFields: [
-        { key: "name", label: "敏感名称" },
-        { key: "feature", label: "敏感特征" },
-        { key: "leave", label: "敏感等级" },
-        { key: "actions", label: "操作" },
+        {
+          key: "name",
+          label: "敏感名称",
+        },
+        {
+          key: "feature",
+          label: "敏感特征",
+        },
+        {
+          key: "leave",
+          label: "敏感等级",
+        },
+        {
+          key: "actions",
+          label: "操作",
+          thStyle: "width:100px",
+        },
       ],
-      controlItem: [],
+      controlItem: [
+        { type: 0, name: "test001", state: 0, feature: "aaaaaa", leave: 0 },
+        { type: 1, name: "test002", state: 1, feature: "bbbbbb", leave: 1 },
+      ],
     };
   },
   methods: {
     modal_show() {
       this.modal_add = true;
       this.vStatus = "add";
+      this.sensitive = {
+        type: 0,
+        name: "",
+        state: 0,
+        feature: "",
+        leave: 0,
+        update: false,
+      };
     },
+    // 修改
+    handle_edit(data) {
+      this.modal_add = true;
+      this.vStatus = "edit";
+      this.index = data.index;
+      this.sensitive = JSON.parse(JSON.stringify(data.item));
+      console.log("data>>>", data);
+    },
+    // 新增
     handle_pre() {
-      let printItem = JSON.parse(JSON.stringify({ ...this.sensitive }));
+      let printItem = JSON.parse(
+        JSON.stringify({
+          ...this.sensitive,
+        })
+      );
       printItem.state = Number(printItem.state);
       printItem.update = Number(printItem.update);
       if (this.vStatus == "add") {
         this.controlItem.push(printItem);
+      } else if (this.vStatus == "edit") {
+        this.controlItem.splice(this.index, 1, printItem);
+        console.log(this.controlItem);
       }
+      this.handle_reset();
+    },
+    // 取消
+    handle_reset() {
+      this.modal_add = false;
     },
   },
 };
