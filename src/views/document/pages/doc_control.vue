@@ -111,7 +111,9 @@
               <b-button class="mr-1" variant="danger" @click="del_item"
                 >确定</b-button
               >
-              <b-button variant="outline-danger">删除</b-button>
+              <b-button variant="outline-danger" @click="del_reset"
+                >取消</b-button
+              >
             </div>
           </b-modal>
         </template>
@@ -216,12 +218,16 @@ export default {
       this.cont_items.splice(this.delItemId, 1);
       this.handle_reset();
     },
+    // 取消删除操作
+    del_reset() {
+      this.modal_del = false;
+    },
     //  关闭弹窗
     handle_reset() {
-      this.cont = {
-        path: "",
-        per: [0, 1, 2],
-      };
+      // this.cont = {
+      //   path: "",
+      //   per: [0, 1, 2],
+      // };
       this.addItems = false;
     },
     fn(params) {

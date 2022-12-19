@@ -85,7 +85,9 @@ localize({
       path: "路径",
       permissions: "操作权限",
       sensitiveName: "敏感名称",
-      feature: '特征'
+      feature: "特征",
+      specifyPath: "指定外发途径",
+      customize: "自定义程序",
     },
     fields: {
       password: {

@@ -23,4 +23,38 @@ const contentOptions = [
   { key: 0, title: "智能分析" },
   { key: 1, title: "实时分析" },
 ];
-export { eff_item, eff_time, permissions, warnOptions, contentOptions };
+// 外发途径
+const routeOptions = [
+  { key: 0, title: "所有途径" },
+  { key: 1, title: "指定外发途径" },
+];
+// 规则
+const rulesOptions = [
+  { key: 0, title: "全部文件" },
+  { key: 1, title: "复合规则" },
+];
+// 是否备份
+const isBackupOptions = [
+  { key: 0, title: "备份" },
+  { key: 1, title: "不备份" },
+];
+// 指定外发路径
+const specifyRouteOptions = [
+  { key: 0, title: "浏览器" },
+  { key: 1, title: "即使通讯软件" },
+  { key: 2, title: "电子邮件客户端" },
+  { key: 3, title: "网盘" },
+  { key: 4, title: "移动存储" },
+  { key: 5, title: "自定义程序" },
+];
+export {
+  eff_item,
+  eff_time,
+  permissions,
+  warnOptions,
+  contentOptions,
+  routeOptions,
+  rulesOptions,
+  isBackupOptions,
+  specifyRouteOptions,
+};
