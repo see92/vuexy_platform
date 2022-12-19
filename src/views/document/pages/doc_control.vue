@@ -29,7 +29,7 @@
               <validation-provider
                 rules="required"
                 name="permissions"
-                #default="{ errors }"
+                #default="{ errors }" 
               >
                 <b-form-group
                   label="操作权限："
