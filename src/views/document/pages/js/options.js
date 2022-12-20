@@ -47,6 +47,16 @@ const specifyRouteOptions = [
   { key: 4, title: "移动存储" },
   { key: 5, title: "自定义程序" },
 ];
+const unitOptions = [
+  { key: 0, title: "KB" },
+  { key: 1, title: "MB" },
+  { key: 2, title: "GB" },
+  { key: 3, title: "TB" },
+];
+const statusOptions = [
+  { key: 0, title: "停用" },
+  { key: 1, title: "启用" },
+];
 export {
   eff_item,
   eff_time,
@@ -57,4 +67,6 @@ export {
   rulesOptions,
   isBackupOptions,
   specifyRouteOptions,
+  unitOptions,
+  statusOptions,
 };

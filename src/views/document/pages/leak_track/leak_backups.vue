@@ -29,33 +29,33 @@
                   />
                 </div>
               </b-form-group>
-              <validation-provider
+              <!-- <validation-provider
                 rules="required"
                 name="specifyPath"
                 #default="{ errors }"
                 v-show="backup.outgo == 1"
+              > -->
+              <b-form-group
+                label="指定外发途径："
+                label-for="specifyPath"
+                label-cols-md="auto"
+                v-show="backup.outgo == 1"
               >
-                <b-form-group
-                  label="指定外发途径："
-                  label-for="specifyPath"
-                  label-cols-md="auto"
-                  :state="errors.length > 0 ? false : null"
-                >
-                  <div style="width: 550px">
-                    <v-select
-                      :options="specifyRouteOptions"
-                      :searchable="false"
-                      :clearable="false"
-                      :close-on-select="false"
-                      :reduce="(title) => title.key"
-                      label="title"
-                      multiple
-                      v-model="backup.specifyRoute"
-                    />
-                  </div>
-                  <small class="text-danger">{{ errors[0] }} </small>
-                </b-form-group>
-              </validation-provider>
+                <div style="width: 550px">
+                  <v-select
+                    :options="specifyRouteOptions"
+                    :searchable="false"
+                    :clearable="false"
+                    :close-on-select="false"
+                    :reduce="(title) => title.key"
+                    label="title"
+                    multiple
+                    v-model="backup.specifyRoute"
+                  />
+                </div>
+                <!-- <small class="text-danger">{{ errors[0] }} </small> -->
+              </b-form-group>
+              <!-- </validation-provider> -->
               <div v-show="backup.specifyRoute.includes(5)">
                 <div>
                   以下自定义进程外发文件将被会禁止，每个进程名一行，如：QQ.exe
@@ -86,7 +86,7 @@
               </b-form-group>
 
               <!--  -->
-              <div>
+              <div v-show="backup.rules == 1">
                 <b-form-group
                   label=""
                   label-for="fileType"
@@ -96,7 +96,6 @@
                     >文件类型</b-form-checkbox
                   >
                 </b-form-group>
-                {{ backup.fileType }}
                 <b-form-group
                   label=""
                   label-for="fileSize"
@@ -106,6 +105,56 @@
                     >文件大小</b-form-checkbox
                   >
                 </b-form-group>
+                <div
+                  style="width: 670px"
+                  class="d-flex justify-content-between"
+                >
+                  <div style="margin-right: 5px">
+                    <el-input-number
+                      style="margin: 0 0 15px 120px; width: 150px"
+                      v-model="backup.minNum"
+                      controls-position="right"
+                      :min="0"
+                      :max="16777216"
+                      :disabled="!backup.fileSize"
+                    />
+                  </div>
+                  <div class="vSelect mr-1">
+                    <v-select
+                      :options="unitOptions"
+                      :searchable="false"
+                      :clearable="false"
+                      :reduce="(title) => title.key"
+                      label="title"
+                      v-model="backup.minUnit"
+                      :disabled="!backup.fileSize"
+                    />
+                  </div>
+                  <span style="color: black; height: 50px; line-height: 40px"
+                    >-</span
+                  >
+                  <div class="ml-1" style="margin-right: 5px">
+                    <el-input-number
+                      style="width: 150px"
+                      v-model="backup.maxNum"
+                      controls-position="right"
+                      :min="1"
+                      :max="16777216"
+                      :disabled="!backup.fileSize"
+                    />
+                  </div>
+                  <div class="vSelect">
+                    <v-select
+                      :options="unitOptions"
+                      :searchable="false"
+                      :clearable="false"
+                      :reduce="(title) => title.key"
+                      label="title"
+                      v-model="backup.maxUnit"
+                      :disabled="!backup.fileSize"
+                    />
+                  </div>
+                </div>
               </div>
 
               <!-- 备注 -->
@@ -132,6 +181,22 @@
                   />
                 </div>
               </b-form-group>
+              <b-form-group
+                label="状态："
+                label-for="status"
+                label-cols-md="auto"
+              >
+                <div style="width: 550px">
+                  <v-select
+                    :options="statusOptions"
+                    :searchable="false"
+                    :clearable="false"
+                    :reduce="(title) => title.key"
+                    label="title"
+                    v-model="backup.status"
+                  />
+                </div>
+              </b-form-group>
               <div class="d-flex justify-content-end">
                 <b-button
                   variant="primary"
@@ -140,7 +205,9 @@
                   type="submit"
                   >保存</b-button
                 >
-                <b-button variant="outline-primary">取消</b-button>
+                <b-button variant="outline-primary" @click="handle_reset"
+                  >取消</b-button
+                >
               </div>
             </b-form>
           </validation-observer>
@@ -168,6 +235,8 @@ import {
   rulesOptions,
   isBackupOptions,
   specifyRouteOptions,
+  unitOptions,
+  statusOptions,
 } from "../js/options";
 export default {
   name: "leak_backups",
@@ -190,6 +259,8 @@ export default {
       rulesOptions,
       isBackupOptions,
       specifyRouteOptions,
+      unitOptions,
+      statusOptions,
       backFields: [
         { key: "path", label: "外发途径" },
         { key: "rules", label: "规则" },
@@ -209,6 +280,11 @@ export default {
         specifyRoute: [], //指定外发路径
         customize: "",
         fileType: false,
+        minNum: 0, //最小值
+        maxNum: 100, //最大值
+        minUnit: 1, //最小值单位
+        maxUnit: 1, //最大值单位
+        status: 0,
       },
     };
   },
@@ -216,6 +292,27 @@ export default {
     // 展示添加弹窗
     show_modal() {
       this.addItems = true;
+      this.backup = {
+        outgo: 0,
+        rules: 0,
+        isBackup: 0,
+        specifyRoute: [],
+        customize: "",
+        fileType: false,
+        minNum: 0,
+        maxNum: 100,
+        minUnit: 1,
+        maxUnit: 1,
+        status: 0,
+      };
+    },
+    // 取消弹窗
+    handle_reset() {
+      this.addItems = false;
+    },
+    handle_pre() {
+      let backItem = { ...this.backup };
+      console.log(backItem, "<<<<<data");
     },
   },
 };
@@ -224,6 +321,12 @@ export default {
 .back_modal {
   .col-form-label {
     width: 120px;
+  }
+}
+.vSelect {
+  .vs__dropdown-toggle {
+    width: 100px;
+    height: 40px;
   }
 }
 </style>
