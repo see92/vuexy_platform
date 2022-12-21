@@ -163,7 +163,7 @@
                 label-for="remark"
                 label-cols-md="auto"
               >
-                <b-form-input style="width: 550px" />
+                <b-form-input style="width: 550px" v-model="backup.remark" />
               </b-form-group>
               <b-form-group
                 label="是否备份："
@@ -214,7 +214,52 @@
         </div>
       </b-modal>
     </div>
-    <b-table :fields="backFields" :items="backItems"></b-table>
+    <b-table :fields="backFields" :items="backItems">
+      <template #cell(outgo)="data">
+        <span class="text-nowrap" v-if="data.item.outgo === 0">所有途径</span>
+        <span class="text-nowrap" v-if="data.item.outgo === 1">
+          {{ addDiskType(specifyRouteOptions, data.item.specifyRoute) }}
+        </span>
+      </template>
+      <template #cell(rules)="data">
+        <span class="text-nowrap"
+          >{{ data.item.rules == 0 ? "全部文件" : "复合规则" }}
+        </span>
+      </template>
+      <template #cell(isBackup)="data">
+        <span class="text-nowrap">
+          {{ data.item.isBackup === 0 ? "备份" : "不备份" }}
+        </span>
+      </template>
+
+      <template #cell(status)="data">
+        <span class="text-nowrap">
+          {{ data.item.status === 0 ? "关闭" : "开启" }}
+        </span>
+      </template>
+
+      <template #cell(action)="data">
+        <div class="d-flex align-items-center">
+          <feather-icon
+            icon="EditIcon"
+            size="16"
+            style="cursor: pointer"
+            :id="`edit_${data.index}`"
+            @click.stop="handle_edit(data)"
+            class="mr-50"
+          />
+          <b-tooltip :target="`edit_${data.index}`" title="编辑信息" />
+          <feather-icon
+            icon="Trash2Icon"
+            size="16"
+            style="cursor: pointer"
+            :id="`Trash2_${data.index}`"
+            @click.stop="handle_del(data.index)"
+          />
+          <b-tooltip :target="`Trash2_${data.index}`" title="删除信息" />
+        </div>
+      </template>
+    </b-table>
   </div>
 </template>
 
@@ -228,6 +273,7 @@ import {
   BFormInput,
   BFormTextarea,
   BFormCheckbox,
+  BTooltip,
 } from "bootstrap-vue";
 import vSelect from "vue-select";
 import {
@@ -251,6 +297,7 @@ export default {
     BFormInput,
     BFormTextarea,
     BFormCheckbox,
+    BTooltip,
   },
   data() {
     return {
@@ -262,16 +309,22 @@ export default {
       unitOptions,
       statusOptions,
       backFields: [
-        { key: "path", label: "外发途径" },
+        { key: "outgo", label: "外发途径" },
         { key: "rules", label: "规则" },
         { key: "remark", label: "备注" },
         { key: "isBackup", label: "是否备份" },
         { key: "status", label: "状态" },
-        { key: "actions", label: "操作", thStyle: "width:100px" },
+        { key: "action", label: "操作", thStyle: "width:100px" },
       ],
       backItems: [
-        { path: "fds", rules: 0, remark: "111", isBackup: 1, status: 1 },
-        { path: "qwe", rules: 1, remark: "222", isBackup: 0, status: 0 },
+        {
+          outgo: 1,
+          specifyRoute: [1, 2],
+          rules: 0,
+          remark: "111",
+          isBackup: 1,
+          status: 1,
+        },
       ],
       backup: {
         outgo: 0, //外发途径
@@ -286,12 +339,15 @@ export default {
         maxUnit: 1, //最大值单位
         status: 0,
       },
+      vStatus: null,
+      index: null,
     };
   },
   methods: {
     // 展示添加弹窗
     show_modal() {
       this.addItems = true;
+      this.vStatus = "add";
       this.backup = {
         outgo: 0,
         rules: 0,
@@ -310,9 +366,38 @@ export default {
     handle_reset() {
       this.addItems = false;
     },
+    // 修改泄密备份
+    handle_edit(data) {
+      this.show_modal();
+      this.vStatus = "edit";
+      this.backup = JSON.parse(JSON.stringify(data.item));
+      this.index = data.index;
+    },
+    // 新增信息
     handle_pre() {
       let backItem = { ...this.backup };
-      console.log(backItem, "<<<<<data");
+      backItem.fileType = Number(backItem.fileType);
+      console.log(backItem, "<<<<backItem");
+      if (this.vStatus === "add") {
+        this.backItems.push(backItem);
+      } else if (this.vStatus === "edit") {
+        this.backItems.splice(this.index, 1, backItem);
+      }
+      this.handle_reset();
+    },
+
+    // 回显多选框内容
+    addDiskType(params, val) {
+      let key = val;
+      let items = [];
+      params.forEach((item) => {
+        key.forEach((each) => {
+          if (item.key == each) {
+            items.push(item.title);
+          }
+        });
+      });
+      return items.toString();
     },
   },
 };

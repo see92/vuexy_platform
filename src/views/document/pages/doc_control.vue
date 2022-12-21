@@ -29,7 +29,7 @@
               <validation-provider
                 rules="required"
                 name="permissions"
-                #default="{ errors }" 
+                #default="{ errors }"
               >
                 <b-form-group
                   label="操作权限："
@@ -194,7 +194,7 @@ export default {
     handle_edit(data) {
       this.handle_modal();
       this.cont = JSON.parse(JSON.stringify(data.item));
-      this.index = data.index;
+      this.index = data.index;  
       this.vStatus = "edit";
     },
     // 新增
