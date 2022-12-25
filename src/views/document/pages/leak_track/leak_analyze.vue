@@ -60,6 +60,7 @@ export default {
         file: true,
       },
       analyzeFields: [
+        { key: "checkbox", label: "" },
         { key: "name", label: "名称" },
         { key: "leave", label: "敏感级别" },
         { key: "condition", label: "数据条件" },
@@ -69,5 +70,6 @@ export default {
       ],
     };
   },
+  methods: {},
 };
 </script>
