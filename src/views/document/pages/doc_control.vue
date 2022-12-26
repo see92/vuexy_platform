@@ -89,7 +89,7 @@
               :id="`edit_${data.index}`"
               @click="handle_edit(data)"
             />
-            <b-tooltip :target="`edit_${data.index}`" />
+            <b-tooltip :target="`edit_${data.index}`" title="编辑信息" />
             <feather-icon
               size="16"
               icon="Trash2Icon"
@@ -97,8 +97,9 @@
               :id="`trash_${data.index}`"
               @click.stop="handle_del(data.index)"
             />
+            <b-tooltip :target="`trash2_${data.index}`" title="删除信息" />
           </div>
-          <b-modal
+          <!-- <b-modal
             size="sm"
             title="提示："
             v-model="modal_del"
@@ -115,7 +116,15 @@
                 >取消</b-button
               >
             </div>
-          </b-modal>
+          </b-modal> -->
+          <Modal :ModalFlag.sync="ModalFlag">
+            <b-button variant="danger" class="mr-1" @click="del_item" slot="ok"
+              >确定</b-button
+            >
+            <b-button variant="outline-danger" @click="del_reset" slot="cancel"
+              >取消</b-button
+            >
+          </Modal>
         </template>
       </b-table>
     </div>
@@ -156,10 +165,11 @@ export default {
     vSelect,
     BFormCheckbox,
     BTooltip,
+    Modal: () => import("@/views/components/del_modal.vue"),
   },
   data() {
     return {
-      modal_del: false, //  删除弹窗
+      ModalFlag: false, //  删除弹窗
       delItemId: null, //删除ID
       vStatus: null,
       flag: true,
@@ -194,7 +204,7 @@ export default {
     handle_edit(data) {
       this.handle_modal();
       this.cont = JSON.parse(JSON.stringify(data.item));
-      this.index = data.index;  
+      this.index = data.index;
       this.vStatus = "edit";
     },
     // 新增
@@ -209,7 +219,7 @@ export default {
     },
     // 删除弹窗
     handle_del(index) {
-      this.modal_del = true;
+      this.ModalFlag = true;
       this.delItemId = index;
       console.log(this.delItemId, "idddddd");
     },
@@ -220,7 +230,7 @@ export default {
     },
     // 取消删除操作
     del_reset() {
-      this.modal_del = false;
+      this.ModalFlag = false;
     },
     //  关闭弹窗
     handle_reset() {
