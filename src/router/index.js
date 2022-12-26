@@ -82,6 +82,20 @@ const router = new VueRouter({
       },
     },
     {
+      path: "/test",
+      name: "test",
+      component: () => import("@/views/test/index.vue"),
+      meta: {
+        pageTitle: "TEST",
+        breadcrumb: [
+          {
+            text: "测试",
+            active: true,
+          },
+        ],
+      },
+    },
+    {
       path: "/login",
       name: "login",
       component: () => import("@/views/Login.vue"),

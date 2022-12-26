@@ -24,4 +24,9 @@ export default [
     route: "print",
     icon: "PrinterIcon",
   },
+  {
+    title: "测试",
+    route: "test",
+    icon: "HomeIcon",
+  },
 ];
