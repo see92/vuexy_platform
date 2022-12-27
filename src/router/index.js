@@ -96,6 +96,20 @@ const router = new VueRouter({
       },
     },
     {
+      path: "/other",
+      name: "other",
+      components: () => import("@/views/other/index.vue"),
+      meta: {
+        pageTitle: "其他",
+        breadcrumb: [
+          {
+            text: "其他",
+            active: true,
+          },
+        ],
+      },
+    },
+    {
       path: "/login",
       name: "login",
       component: () => import("@/views/Login.vue"),

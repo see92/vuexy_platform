@@ -7,6 +7,9 @@
             <b-tab title="打印管控">
               <print_control />
             </b-tab>
+            <b-tab title="打印水印">
+              <waterMark />
+            </b-tab>
             <div>
               <hr />
               <b-button
@@ -29,6 +32,7 @@
 import { BCard, BTab, BTabs, BForm, BButton } from "bootstrap-vue";
 import { ValidationObserver } from "vee-validate";
 import print_control from "./pages/print_control.vue";
+import waterMark from "./pages/water_mark.vue";
 
 export default {
   name: "print",
@@ -40,6 +44,7 @@ export default {
     ValidationObserver,
     BButton,
     print_control,
+    waterMark,
   },
   data() {
     return {};

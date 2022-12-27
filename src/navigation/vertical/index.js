@@ -29,4 +29,9 @@ export default [
     route: "test",
     icon: "HomeIcon",
   },
+  {
+    title: "其他",
+    route: "other",
+    icon: "HomeIcon",
+  },
 ];

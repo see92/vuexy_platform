@@ -57,6 +57,10 @@ const statusOptions = [
   { key: 0, title: "停用" },
   { key: 1, title: "启用" },
 ];
+const outgoOptions = [
+  { key: 0, title: "拒绝外发" },
+  { key: 1, title: "允许外发" },
+];
 export {
   eff_item,
   eff_time,
@@ -69,4 +73,5 @@ export {
   specifyRouteOptions,
   unitOptions,
   statusOptions,
+  outgoOptions,
 };
